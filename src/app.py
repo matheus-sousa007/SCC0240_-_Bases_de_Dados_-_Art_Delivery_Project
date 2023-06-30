@@ -9,6 +9,8 @@ DB_HOST = 'localhost'
 DB_PORT = 5432
 
 def create_tables(cursor, schema_file):
+    file_drop = open("../bd/drops.sql", "r").read()
+    cursor.execute(file_drop)
     cursor.execute(schema_file)
     return
 
