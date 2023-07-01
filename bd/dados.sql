@@ -94,7 +94,7 @@ INSERT INTO ClassificacaoUsuario VALUES(
 )
 
 INSERT INTO ClassificacaoComum VALUES (
-    'rupestre123',
+    'Rupestre',
     'CLIENTE',
     100,
     200,
@@ -115,3 +115,90 @@ VALUES ('rockstar87');
 INSERT INTO Administrador (nomeUsuario)
 VALUES ('janesmith');
 
+
+INSERT INTO Cliente VALUES(
+    'rupestre123',
+    2,
+    1,
+    0,
+    3,
+    0,
+    8,
+    1
+);
+
+INSERT INTO Artista VALUES(
+    'johndoe',
+    2,
+    1,
+    0,
+    3,
+    0,
+    8,
+    1
+);
+
+INSERT INTO Post (id, DataCriacao, artista, DataUltimaEdicao, Titulo, Descricao, Arte, Visibilidade, NroRepostagens, NroAlbums, NroLikes, NroDislikes, NroAmei, NroChoro, NroEdicoes)
+VALUES(
+    0
+   '2023-04-10 09:45:00',
+   'johndoe',
+    '2023-06-30 10:30:00',
+    'A arte da vida é viver a arte.',
+    'Viver a arte é a arte da vida.',
+    'imagem1.jpg',
+    'Público',
+    5,
+    2,
+    10,
+    2,
+    8,
+    3,
+    1
+)
+
+INSERT INTO Post (id, DataCriacao, artista, DataUltimaEdicao, Titulo, Descricao, Arte, Visibilidade, NroRepostagens, NroAlbums, NroLikes, NroDislikes, NroAmei, NroChoro, NroEdicoes)
+VALUES (
+    1,
+    '2023-01-10 09:45:00',
+    'johndoe',
+    '2023-06-30 11:00:00',
+    'Explorando a criatividade',
+    'Descubra o poder da criatividade em sua vida.',
+    'imagem2.jpg',
+    'Privado',
+    5,
+    2,
+    10,
+    2,
+    8,
+    3,
+    1
+)
+
+INSERT INTO Reage (cliente, post, reacao)
+VALUES (
+    'Rupestre',
+    1,
+    'Like'
+)
+
+
+INSERT INTO Reage (cliente, post, reacao)
+VALUES (
+    'Rupestre',
+    1,
+    'Like'
+)
+
+INSERT INTO Edicao (id, DataCriacaoEdicao, post, DataEdicaoAnterior, Titulo, Descricao, Arte, Visibilidade)
+VALUES (
+    1,
+    '2023-06-30 09:00:00',
+    1,
+    '2023-06-29 14:30:00',
+    'Nova Edição',
+    'Descrição da nova edição',
+    'imagem2.jpg',
+    'assinantes'
+);
