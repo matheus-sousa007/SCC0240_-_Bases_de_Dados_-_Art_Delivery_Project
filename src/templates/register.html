@@ -1,0 +1,42 @@
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+{% block content %}
+    <h1>Cadastro</h1>
+    <form method="POST" style="margin: 0 20%;">
+        {{form.hidden_tag()}}
+        {{form.nomeUsuario.label}}
+        {{form.nomeUsuario(class="form-control" )}}
+        
+        {{form.nome.label}}
+        {{form.nome(class="form-control" )}}
+        
+        {{form.email.label}}
+        {{form.email(class="form-control" )}}
+        
+        {{form.senha.label}}
+        {{form.senha(class="form-control" )}}
+        
+        {{form.rua.label}}
+        {{form.rua(class="form-control" )}}
+        
+        {{form.numero.label}}
+        {{form.numero(class="form-control" )}}
+        
+        {{form.bairro.label}}
+        {{form.bairro(class="form-control" )}}
+                
+        {{form.dataNasc.label}}
+        {{form.dataNasc(class="form-control" )}}
+        
+        {{form.telefone.label}}
+        {{form.telefone(class="form-control" )}}
+
+        {{form.tipoUsuario.label}}
+        {{form.tipoUsuario(class="form-control" )}}
+        <br>
+        {{form.submit.label}}
+
+        {{form.submit(class="btn btn-primary")}}
+
+    </form>
+{% endblock %}

@@ -1,0 +1,24 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+<div class="index" style="margin: 5% 20%; align-content: center;">
+
+    <form method="POST" >
+        <br>
+        
+        Pesquisar posts atraves de tags
+        {{form.tags.label}}
+        {{form.tags(class="form-control" )}}
+        <br>
+        {{form.submit(class="btn btn-primary")}}
+
+        {% for post in posts %}
+        Posts Encontrados
+        <div style="padding: 10px; margin: 20px">
+            <p style="font-size: 24px">{{ post }}</p>
+        </div>
+        {% endfor %}
+
+    </form>
+    
+    
+</div>
