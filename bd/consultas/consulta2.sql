@@ -13,3 +13,25 @@ SELECT post, nroEdicao, COUNT(*)
 					FROM Reposta)
 				ON ((yearPrev < yearRepost) OR (yearPrev = yearRepost AND monthPrev <= yearRepost)) AND ((yearCriacao > yearRepost) OR (yearCriacao = yearRepost AND monthCriacao > yearRepost))
 	GROUP BY post, nroEdicao
+
+
+
+Versao Nova
+
+-- Tabelas Repostagem, Post e Edicao
+-- 1. Para cada edição de um post contar quantas vezes aquela versão foi repostada.
+
+SELECT Post, nroEdicao, COUNT(X) AS Qtd_Repostagens
+FROM 
+(
+	SELECT P.id, E.id, E.dataCriacaoEdicao as dataEdicao, E.dataEdicaoAnterior AS edicaoAnterior
+	FROM Post P
+	JOIN Edicao E
+	ON P.id = E.post
+	WHERE dataEdicao IS NOT NULL AND (edicaoAnterior IS NULL OR (edicaoAnterior IS NOT NULL AND edicaoAnterior < dataEdicao)) 	
+) AS F
+JOIN
+(
+	SELECT dataRepostagem FROM Repostagem
+)
+ON 
