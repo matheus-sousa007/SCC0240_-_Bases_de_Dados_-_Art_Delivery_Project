@@ -36,7 +36,7 @@ CREATE TABLE Post (
     artista VARCHAR(40) NOT NULL,
     DataUltimaEdicao TIMESTAMP,
     Titulo VARCHAR(32) NOT NULL,
-    Descricao VARCHAR(32),                  -- tamanho?
+    Descricao VARCHAR(32),
     Arte VARCHAR(32) NOT NULL,
     Visibilidade VARCHAR(10) NOT NULL,
     NroRepostagens INTEGER NOT NULL DEFAULT 0,
@@ -76,13 +76,14 @@ CREATE TABLE Cliente (
 );
 
 CREATE TABLE Artista (
-    NomeUsuario VARCHAR(40) PRIMARY KEY,
+    NomeUsuario VARCHAR(40),
     Preco NUMERIC(10, 2),
     ContaBancaria VARCHAR(32),
     NroAssinantes INTEGER NOT NULL DEFAULT 0,
     NroPosts INTEGER NOT NULL DEFAULT 0,
     NroRequisiçõesFinalizadas INTEGER NOT NULL DEFAULT 0,
     NroRequisiçõesEmAndamento INTEGER NOT NULL DEFAULT 0,
+    CONSTRAINT pk_Artista PRIMARY KEY (NomeUsuario),
     CONSTRAINT fk_Artista_comum FOREIGN KEY(NomeUsuario) REFERENCES ClassificacaoComum(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT ck_Artista_positive
         CHECK(
@@ -187,10 +188,19 @@ CREATE TABLE Requisicao (
     Descricao VARCHAR(32),
     Minimo INTEGER NOT NULL,
     Maximo INTEGER NOT NULL,
-    Tipo VARCHAR(32) NOT NULL,
-    Avaliacaoartista NUMERIC(2,1),       -- verificar tipo
-    AvaliacaoCliente NUMERIC(2,1),
-    status VARCHAR(32) NOT NULL,
+    Tipo VARCHAR(32) NOT NULL,                  -- ['EXCLUSIVO', 'NORMAL']
+    Avaliacaoartista NUMERIC(2,1),              -- Nota entre 0.0 até 10.0
+    AvaliacaoCliente NUMERIC(2,1),              -- Nota entre 0.0 até 10.0
+    -- Status:
+    -- '1' -> Arquivado
+    -- '2' -> Em Aberto
+    -- '3' -> Cheio e Aguardando Autorização
+    -- '4' -> Aceitando e Aguardando Autorização
+    -- '5' -> Em Progresso
+    -- '6' -> Concluído
+    -- '7' -> Disponível
+    -- '8' -> Entregue
+    status CHAR(1) NOT NULL,
     DataTermino TIMESTAMP,
     NroAceitacoesExclusivas INTEGER NOT NULL DEFAULT 0,
     NroAceitacoesGerais INTEGER NOT NULL DEFAULT 0,
@@ -199,13 +209,14 @@ CREATE TABLE Requisicao (
 
     CONSTRAINT pk_Requisicao PRIMARY KEY(DataCriacao, Cliente),
     CONSTRAINT fk_Requisicao_Cliente FOREIGN KEY(Cliente) REFERENCES ClassificacaoComum(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT ck_Requisicao_Estados CHECK(status in  ('1', '2', '3', '4', '5', '6')),
+    CONSTRAINT ck_Requisicao_Estados CHECK(status in  ('1', '2', '3', '4', '5', '6', '7', '8')),
     CONSTRAINT ck_Requisicao_AvaliacaoArtista CHECK(Avaliacaoartista = NULL OR Avaliacaoartista BETWEEN 0 AND 10), 
     CONSTRAINT ck_Requisicao_Positive 
         CHECK(
             (NroAceitacoesExclusivas >= 0) AND (NroAceitacoesGerais >= 0) AND 
             (NroAceitacoesAbertasTotal >= 0) AND (NroAceitacoesRejeitadas >= 0)
-        )
+        ),
+    CONSTRAINT ck_TipoRequisicao CHECK (Tipo in ('EXCLUSIVO', 'NORMAL'))
 );
 
 CREATE TABLE Tag (
@@ -307,18 +318,28 @@ CREATE TABLE AssinaturaArtistaCliente (
 );
 
 CREATE TABLE Aceitacao (
-    ID SERIAL,
+    id SERIAL,
     artista VARCHAR(40) NOT NULL,
     dataRequisicao TIMESTAMP NOT NULL,
     cliente VARCHAR(32) NOT NULL,
     tipoDeAceitacao VARCHAR(32),
     valor INTEGER NOT NULL,
-    escopo VARCHAR(32) NOT NULL,            -- ?
+    escopo VARCHAR(32) NOT NULL,
+    -- Status:
+    -- '1' -> Arquivado
+    -- '2' -> Em Aberto
+    -- '3' -> Cheio e Aguardando Autorização
+    -- '4' -> Aceitando e Aguardando Autorização
+    -- '5' -> Em Progresso
+    -- '6' -> Concluído
+    -- '7' -> Disponível
+    -- '8' -> Entregue
     status CHAR(1) NOT NULL,
+    CONSTRAINT pk_Aceitacao PRIMARY KEY (id),
     CONSTRAINT sk_aceitacao UNIQUE(artista, dataRequisicao, cliente),
-    CONSTRAINT fk_Aceitacao_artista FOREIGN KEY(artista) REFERENCES artista(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT fk_Aceitacao_artista FOREIGN KEY(artista) REFERENCES Artista(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_Aceitacao_requisicao FOREIGN KEY(dataRequisicao, cliente) REFERENCES Requisicao(dataCriacao, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT ck_Aceitacao_status CHECK(status in  ('1', '2', '3', '4', '5', '6'))
+    CONSTRAINT ck_Aceitacao_status CHECK(status in ('1', '2', '3', '4', '5', '6', '7', '8'))
 );
 
 CREATE TABLE Renegocia (
