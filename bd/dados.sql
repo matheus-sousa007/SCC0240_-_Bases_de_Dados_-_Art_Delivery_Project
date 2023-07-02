@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 INSERT INTO tag ( nome, tipo, nropostsrestritos, nropostspublicos, nroalbuns ) VALUES ( 'Grafite', 'pintura', 1462, 1462, 1461 ); 
 INSERT INTO tag ( nome, tipo, nropostsrestritos, nropostspublicos, nroalbuns ) VALUES ( 'Escultura', 'pintura', 1803, 142, 1837 ); 
 INSERT INTO tag ( nome, tipo, nropostsrestritos, nropostspublicos, nroalbuns ) VALUES ( 'Tinta oleo', 'artes plasticas', 994, 134, 1837 ); 
