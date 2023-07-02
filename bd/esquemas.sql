@@ -322,7 +322,7 @@ CREATE TABLE Aceitacao (
     artista VARCHAR(40) NOT NULL,
     dataRequisicao TIMESTAMP NOT NULL,
     cliente VARCHAR(32) NOT NULL,
-    tipoDeAceitacao VARCHAR(32),
+    tipoDeAceitacao VARCHAR(32), -- ['SOMENTE VALOR', 'SOMENTE ESCOPO', 'VALOR E ESCOPO', 'NAO ACEITO']
     valor INTEGER NOT NULL,
     escopo VARCHAR(32) NOT NULL,
     -- Status:
@@ -336,6 +336,7 @@ CREATE TABLE Aceitacao (
     -- '8' -> Entregue
     status CHAR(1) NOT NULL,
     CONSTRAINT pk_Aceitacao PRIMARY KEY (id),
+    CONSTRAINT ck_Aceitacao_tipoDeAceitacao CHECK(tipoDeAceitacao in ('SOMENTE VALOR', 'SOMENTE ESCOPO', 'VALOR E ESCOPO', 'NAO ACEITO')),
     CONSTRAINT sk_aceitacao UNIQUE(artista, dataRequisicao, cliente),
     CONSTRAINT fk_Aceitacao_artista FOREIGN KEY(artista) REFERENCES Artista(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_Aceitacao_requisicao FOREIGN KEY(dataRequisicao, cliente) REFERENCES Requisicao(dataCriacao, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
