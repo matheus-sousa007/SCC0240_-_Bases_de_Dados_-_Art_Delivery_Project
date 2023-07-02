@@ -166,17 +166,17 @@ class database():
 
 
         query = f"""
-        SELECT P.id as post
-                FROM (Post P 
-                    JOIN ClassificacaoPost CP
-                    ON P.id = CP.post)
-                    JOIN (SELECT nome, Count(*) AS nroTagsProcuradas
-                            FROM Tag
-                            WHERE {query_tags}
-                            GROUP BY nome) S
-                    ON S.nome = CP.tag
-                GROUP BY p.id, S.nroTagsProcuradas
-            HAVING Count(*) = S.nroTagsProcuradas
+            SELECT P.*
+            FROM Post P
+            JOIN ClassificacaoPost CP ON P.id = CP.post
+            JOIN (
+                SELECT nome, COUNT(*) AS nroTagsProcuradas
+                FROM Tag
+                WHERE {query_tags}
+                GROUP BY nome
+            ) S ON S.nome = CP.tag
+            GROUP BY P.id, S.nroTagsProcuradas
+            HAVING COUNT(*) = S.nroTagsProcuradas;
         """
         try:
             self.connection()

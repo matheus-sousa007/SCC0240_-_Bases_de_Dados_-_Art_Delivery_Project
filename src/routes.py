@@ -31,7 +31,6 @@ class LoginForm(FlaskForm):
 class tagsForm(FlaskForm):
     tags = SelectMultipleField("Tipo de usuario", choices=[])
     submit = SubmitField("Selecionar")
-    print(db.get_tags())
 
 class usersForm(FlaskForm):
     users = SelectField("Nome do usuario", choices=[])

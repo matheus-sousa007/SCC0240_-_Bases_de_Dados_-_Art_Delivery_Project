@@ -51,7 +51,7 @@ CREATE TABLE Post (
     CONSTRAINT fk_Post_Artista FOREIGN KEY(artista) REFERENCES ClassificacaoComum(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT ck_Post_Reacoes 
         CHECK((NroAlbums >= 0) AND 
-            (NroLikes >= 0) AND (NroDislikes >= 0) AND 
+            (NroLike >= 0) AND (NroDislike >= 0) AND 
             (NroAmei >= 0) AND (NroChoro >= 0)
 		),
 	CONSTRAINT ck_Post_Repost CHECK (NroRepostagens >= 0),
