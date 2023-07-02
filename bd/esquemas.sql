@@ -119,6 +119,7 @@ CREATE TABLE Banimento (
     DataTermino TIMESTAMP,
     CONSTRAINT pk_banimento PRIMARY KEY(Administrador, Usuario, data),
     CONSTRAINT fk_banimento_adm FOREIGN KEY(Administrador) REFERENCES ClassificacaoUsuario(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION
+    CONSTRAINT fk_banimento_comum FOREIGN KEY(Usuario) REFERENCES ClassificacaoComum(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
 CREATE TABLE Repostagem (
@@ -323,7 +324,7 @@ CREATE TABLE Aceitacao (
     dataRequisicao TIMESTAMP NOT NULL,
     cliente VARCHAR(32) NOT NULL,
     tipoDeAceitacao VARCHAR(32), -- ['SOMENTE VALOR', 'SOMENTE ESCOPO', 'VALOR E ESCOPO', 'NAO ACEITO']
-    valor INTEGER NOT NULL,
+    valor NUMERIC(2, 2) NOT NULL,
     escopo VARCHAR(32) NOT NULL,
     -- Status:
     -- '1' -> Arquivado
@@ -340,7 +341,8 @@ CREATE TABLE Aceitacao (
     CONSTRAINT sk_aceitacao UNIQUE(artista, dataRequisicao, cliente),
     CONSTRAINT fk_Aceitacao_artista FOREIGN KEY(artista) REFERENCES Artista(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_Aceitacao_requisicao FOREIGN KEY(dataRequisicao, cliente) REFERENCES Requisicao(dataCriacao, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT ck_Aceitacao_status CHECK(status in ('1', '2', '3', '4', '5', '6', '7', '8'))
+    CONSTRAINT ck_Aceitacao_status CHECK(status in ('1', '2', '3', '4', '5', '6', '7', '8')),
+    CONSTRAINT ck_Aceitacao_Valor CHECK(valor > 0)
 );
 
 CREATE TABLE Renegocia (
