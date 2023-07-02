@@ -19,129 +19,151 @@ class database():
         self.conn.close()
 
     def create_schema(self):
-        self.connection()
         file_drop = open("bd/drops.sql", "r").read()
         schema_file = open("bd/esquemas.sql", "r").read()
+        try:
+            self.connection()
+            self.cursor.execute(file_drop)
+            self.conn.commit()
+            self.cursor.execute(schema_file)
+            self.close_connection()
 
-        self.cursor.execute(file_drop)
-        self.cursor.execute(schema_file)
+        except psy.OperationalError as err:
+            print(err)
 
-        self.close_connection()
 
 
     def insert_user(self, user_data):
-        self.connection()
-        insert_user = f"""
-        INSERT INTO ClassificacaoUsuario VALUES(
-            {user_data['nomeUsuario']},
-            {user_data['tipoUsuario']},
-            {user_data['senha']},
-            {user_data['nome']},
-            {user_data['rua']},
-            {user_data['numero']},
-            {user_data['bairro']},
-            {user_data['cidade']},
-            {user_data['telefone']},
-            {user_data['email']},
-            {user_data['dataNasc']},
-            current_timestamp,
-            'NULL'
+        query1 = f"""
+            INSERT INTO ClassificacaoUsuario VALUES(
+                '{user_data['nomeUsuario']}',
+                'Comum',
+                '{user_data['senha']}',
+                '{user_data['nome']}',
+                '{user_data['rua']}',
+                '{user_data['numero']}',
+                '{user_data['bairro']}',
+                '{user_data['cidade']}',
+                '{user_data['telefone']}',
+                '{user_data['email']}',
+                '{user_data['dataNasc']}',
+                current_timestamp,
+                'NULL');
+            """
+        query2 = f"""
+                INSERT INTO ClassificacaoComum VALUES(
+                '{user_data['nomeUsuario']}',
+                '{user_data['tipoUsuario']}'
+                );
         """
-        print(insert_user)
-        insert_user = f"""
-                INSERT INTO ClassificacaoComum(NomeUsuario, TipoComum) 
-                    VALUES({user_data['nomeUsuario']}, 'cliente')
-                """
         
-        self.close_connection()
-    def check_user(self, user_data):
-        self.connection()
+        try:
+            self.connection()
+            self.cursor.execute(query1)
+            self.cursor.execute(query2)
+            self.close_connection()
+        except psy.OperationalError as err:
+            print(err)
+            return None
 
-        print(f"DENTRO {user_data['nomeUsuario']}")
-        query = f"""
-            SELECT * FROM ClassificacaoUsuario WHERE 
-                (nomeusuario = '{user_data["nomeUsuario"]}') 
-                AND (senha = '{user_data["senha"]}')
-            """
-        
-        self.cursor.execute(query)
-        user = self.cursor.fetchall()
-        if user == []:
-            return None, None
-        
-        elif user[0][1] == 'admnistrador':
-            return user, user[0][1].upper()
 
-        query = f"""
-            SELECT * FROM ClassificacaoComum WHERE 
-                (nomeusuario = '{user_data["nomeUsuario"]}')
-            """
-        self.cursor.execute(query)
-        classificacao_user = self.cursor.fetchall()
-        
-        self.close_connection()
 
-        return user, classificacao_user[0][1].upper()
-        #data_response =
     def add_dados(self):
-        file_add = open("bd/dados.sql", "r").read()
-        self.connection()
-        self.cursor.execute(file_add)
-
-        self.close_connection()
+        try:
+            file_add = open("bd/dados.sql", "r").read()
+            self.connection()
+            self.cursor.execute(file_add)
+            self.close_connection()
+        except psy.OperationalError as err:
+            print(err)
 
     def more_reaction_album(self, react):
-        query = """SELECT * 
-                    FROM reage 
-                    WHERE post = (SELECT MAX(post) FROM REAGE)
-                    SELECT
-                    """
-        
-        self.connection()
-        self.cursor.execute(query)
-        post = self.cursor.fetchall()
 
-        return post
+        query = f"""SELECT post, artista
+                FROM POST
+                WHERE nro{react} = (SELECT MAX(nro{react}) FROM POST);
+            """
+        try:
+            self.connection()
+            self.cursor.execute(query)
+            post = self.cursor.fetchall()[0]
+            post_id = post[0]
+            post_artist = post[1]
+        
+        except psy.OperationalError as err:
+            print(err)
+            return None, None
+
+        return post_id, post_artist
 
     def get_users(self):
 
-        self.connection()
-        self.cursor.execute("SELECT nomeUsuario FROM classificacaoComum")
-        users = self.cursor.fetchall()
-        list_users = []
-        for user in users:
-            list_users.append((user[0]))
-        self.close_connection()
-        return list_users
+        try:
+            self.connection()
+            self.cursor.execute("SELECT nomeUsuario FROM classificacaoUsuario")
+            users = self.cursor.fetchall()
+            list_users = []
+            for user in users:
+                list_users.append((user[0]))
+            self.close_connection()
+            return list_users
+        except psy.OperationalError as err:
+            print(err)
+            return None
     
 
 
     def get_followers_of_user(self, user):
+        try:
+            self.connection()
+            self.cursor.execute(f"SELECT usuariosegue FROM segue AS S WHERE(S.usuariosegue='{user}')")
+            followers = self.cursor.fetchall()
+            self.close_connection()
+            return followers
+
+        except psy.OperationalError as err:
+            print(err)
+            return None
+
         
-        self.connection()
-        self.cursor.execute(f"SELECT usuariosegue FROM {user}")
-        followers = self.cursor.fetchall()
-        
-        self.close_connection()
-        return followers
     
     def get_tags(self):
         self.connection()
-        self.cursor.execute("SELECT nome FROM tag")
-        tags = self.cursor.fetchall()
-        list_tags = []
-        for tag in tags:
-            list_tags.append((tag[0]))
-        self.close_connection()
-        return list_tags
-    
+        try:
+            self.cursor.execute("SELECT nome FROM tag")
+            tags = self.cursor.fetchall()
+            list_tags = []
+            for tag in tags:
+                list_tags.append((tag[0]))
+            self.close_connection()
+            return list_tags
+        except psy.OperationalError as err:
+            print(err)
+            return None
+       
+    def artist_by_min_follower(self, min_follower):
+        query = f"""SELECT nomeusuario FROM classificacaoComum AS C 
+                    WHERE (C.numsegidores > {min_follower} 
+                    and UPPER(C.tipocomum) = 'ARTISTA')"""
+        try:
+            self.connection()   
+            self.cursor.execute(query)
+            artists = self.cursor.fetchall()
+            list_artists = []
+            for artist in artists:
+                list_artists.append((artist[0]))
+            self.close_connection()
+            return list_artists
+        except psy.OperationalError as err:
+            print(err)
+            return None
+
     def get_post_by_tag(self, tags):
-        self.connection()
         query_tags = ''
         for tag in tags:
             query_tags += f"nome='{tag}' OR "
         query_tags = query_tags[:len(query_tags)-3]      # removendo ultimo OR
-        print()
+
         query = f"""
         SELECT P.id as post
                 FROM (Post P 
@@ -155,22 +177,15 @@ class database():
                 GROUP BY p.id, S.nroTagsProcuradas
             HAVING Count(*) = S.nroTagsProcuradas
         """
-        self.cursor.execute(query)
-        posts = self.cursor.fetchall()
-        print(posts)
-
-        self.close_connection()
-
-        return posts
-
-        
-def create_tables(cursor, schema_file):
-    file_drop = open("bd/drops.sql", "r").read()
-    file_add = open("bd/dados copy.sql", "r").read()
-    cursor.execute(file_drop)
-    cursor.execute(schema_file)
-    cursor.execute(file_add)
-    return
+        try:
+            self.connection()
+            self.cursor.execute(query)
+            posts = self.cursor.fetchall()
+            self.close_connection()
+            return posts
+        except psy.OperationalError as err:
+            print(err)
+            return None
 
 
 app_flask = Flask(__name__)

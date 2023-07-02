@@ -47,9 +47,18 @@ class moreReacts(FlaskForm):
     
 class minFollower(FlaskForm):
     minFollower = IntegerField("Minimo de Seguidores")
+    submit = SubmitField("Selecionar")
+
     
 @app_flask.route('/', methods=['GET', 'POST'])
 def index():
+    if request.method == 'POST':
+        #print(request.form)
+        db = database()
+        if('reset-db' in request.form):
+            db.create_schema()
+        if('add-db' in request.form):
+            db.add_dados()
     return render_template("index.html")
 
 @app_flask.route('/register', methods=['GET', 'POST'])
@@ -57,6 +66,7 @@ def register():
 
     form = RegisterForm(request.form)
     if request.method == 'POST':
+        print('POST')
         insert_user = f"""
                 INSERT INTO ClassificacaoComum(NomeUsuario, TipoComum) 
                     VALUES({form.nomeUsuario.data}, 'cliente')
@@ -68,11 +78,9 @@ def register():
             print(err)
 
 
-        return 'OK'
+        return url_for('index')
 
-    return render_template("register.html",
-                            form = form,
-                           )
+    return render_template("register.html", form = form)
 
 def get_follows():
     db = database()
@@ -83,10 +91,11 @@ def artista():
     return "artista"
 
 @app_flask.route('/post_tag', methods=['GET', 'POST'])
-@app_flask.route('/post_tag')
 def post_tag():
-    form = tagsForm()
-
+    try:
+        form = tagsForm()
+    except:
+        form = None
     if request.method == 'POST':
 
         try:
@@ -102,13 +111,15 @@ def post_tag():
 @app_flask.route('/followers_by', methods=['GET', 'POST'])
 def followers_by():
     form = usersForm()
-
     if request.method == 'POST':
-
         try:
             db = database()
-            users = db.get_followers_of_user(tuple(form.data['user']))
-            return render_template("followers_by.html", form=form, users=users)
+            
+            users = db.get_followers_of_user(form.data['users'])
+            print('seguidores de ')
+            print(list(users))
+            
+            return render_template("followers_by.html", form=form, users=users, user_follow=form.data['users'])
 
         except psy.Error as err:
             print(err)
@@ -122,8 +133,8 @@ def more_reaction():
     if request.method == 'POST':
         try:
             db = database()
-            post = db.more_reaction_album(tuple(form.data['reaction']))
-            return render_template("more_react.html", form=form, post=post)
+            post_id, post_artist = db.more_reaction_album(form.data['reaction'])
+            return render_template("more_react.html", form=form, id=post_id, artist=post_artist)
 
         except psy.Error as err:
             print(err)
@@ -137,8 +148,9 @@ def artist_by_min_follower():
     if request.method == 'POST':
         try:
             db = database()
-            artists = db.more_reaction_album(tuple(form.data['reaction']))
-            return render_template("artist_by_min_follower.html", form=form, post=artists)
+            print(form.data['minFollower'])
+            artists = db.artist_by_min_follower(form.data['minFollower'])
+            return render_template("artist_by_min_follower.html", form=form, artists=artists)
 
         except psy.Error as err:
             print(err)

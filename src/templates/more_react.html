@@ -10,12 +10,16 @@
 
         {{form.submit(class="btn btn-primary")}}
     </form>
+    {% if form.data['reaction']: %}
     
-    {% for post in posts %}
-    Posts Encontrados
-    <div style="padding: 10px; margin: 20px">
-        <p style="font-size: 24px">{{ post }}</p>
-    </div>
-    {% endfor %}
-    
+    O post com mais reações ({{form.data['reaction']}}):
+    <br>
+    post = {{id}}
+    <!--if block html code-->
+    {% endif %}
+
+    <br><br>
+    <br><br>
+    <a href="{{ url_for('index') }}" class="btn btn-danger">VOLTAR</a>
+
 </div>
