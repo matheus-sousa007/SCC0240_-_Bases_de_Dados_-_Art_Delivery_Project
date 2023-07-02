@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 INSERT INTO ClassificacaoUsuario VALUES 
 ('rupestre','COMUM','123456','Pedro da Silva Souza','Av. Trabalhador Sao Carlense',87,'Jardim Diniz', '1145433243', '11932423452','riachobelo@gmail.com', TO_TIMESTAMP('1998-02-10', 'YYYY-MM-DD'), CURRENT_TIMESTAMP, NULL),
 ('johndoe','COMUM','password123','John Doe','Rua das Flores',123,'São Paulo','1199887766', '11943284235','john.doe@example.com', TO_TIMESTAMP('1990-05-15', 'YYYY-MM-DD'),current_timestamp,NULL),
@@ -148,3 +149,23 @@ INSERT INTO Renegocia(aceitacao, renegociacaoPrevia, remetente, destinatario, aj
 INSERT INTO Mensagens VALUES (1, '2023-08-13 14:50:35', 'Rupestre', 'johndoe', 'Não sei o que tem!', 'Não sei o que colocar aqui!'), (1, '2023-08-14 14:50:35', 'johndoe', 'Rupestre', 'Não sei o que tem!', 'Não sei o que colocar aqui!');
 
 INSERT INTO Responde VALUES (1, '2023-08-14 14:50:35', 'johndoe', 1, '2023-08-13 14:50:35', 'Rupestre');
+=======
+-- Comentarios da tabela para ajudar na insercao
+
+-- INSERT INTO ClassificacaoUsuario VALUES(
+--     'art',
+--     'comum',
+--     '123456',
+--     'Pedro da Silva Souza',
+--     'Av. Trabalhador Sao Carlense',
+--     87,
+--     'Jardim Diniz',
+--     'Riacho Belo',
+--     '10990096718',
+--     'pedrosilsou@gmail.com',
+--     '1996-12-02',
+--     current_timestamp,
+--     'NULL'
+-- )
+INSERT INTO post ( id, datacriacao, artista, dataultimaedicao, titulo, descricao, arte, visibilidade, nrorepostagens, nroalbums, nrolikes, nrodislikes, nroamei, nrochoro, nroedicoes ) VALUES ( 1, '2008-02-06 18:33:22.688', 'art', NULL, 'Cindy called Tony. ', 'John is visiting Tony. ', 'Cindy called Tony. ', 'toy', 1281814912, 1645908761, 553627277, 917721094, 590706535, 954800352, 2010002579 ); 
+>>>>>>> 0f8fe405fb765c70231776e20583e0ede2140ba3
