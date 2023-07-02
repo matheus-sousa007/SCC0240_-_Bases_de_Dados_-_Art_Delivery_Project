@@ -5,21 +5,10 @@
     <form method="POST" style="margin: 5% 20%">
         <br>
 
-        {{form.users.label}}
-        {{form.users(class="form-control")}}
+        {{form.reaction.label}}
+        {{form.reaction(class="form-control")}}
+
         {{form.submit(class="btn btn-primary")}}
-        <br>
-        <br>
-        {% for user in users %}
-        Usuarios que seguem o {{form.data['users']}} 
-        <div style="padding: 10px; margin: 20px">
-            <p style="font-size: 24px">{{ user[0] }}</p>
-        </div>
-        {% endfor %}
     </form>
     
-    
-    <br><br>
-    <br><br>
-    <a href="{{ url_for('index') }}" class="btn btn-danger">VOLTAR</a>
 </div>
