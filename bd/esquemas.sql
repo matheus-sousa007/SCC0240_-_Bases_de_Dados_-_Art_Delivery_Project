@@ -5,10 +5,10 @@ CREATE TABLE ClassificacaoUsuario (
     Nome VARCHAR(40) NOT NULL,
     Logradouro VARCHAR(50),
     nroEndereco INTEGER,
-    cidade VARCHAR(32),
+    cidade VARCHAR(40),
     TelefoneFixo VARCHAR(11),
 	TelefoneMovel VARCHAR(11),
-    Email VARCHAR(32) NOT NULL,
+    Email VARCHAR(40) NOT NULL,
     DataNasc DATE,
     DataIngresso TIMESTAMP,
     FotoPerfil BYTEA,
@@ -35,9 +35,9 @@ CREATE TABLE Post (
     DataCriacao TIMESTAMP NOT NULL,
     artista VARCHAR(40) NOT NULL,
     DataUltimaEdicao TIMESTAMP,
-    Titulo VARCHAR(32) NOT NULL,
-    Descricao VARCHAR(32),
-    Arte VARCHAR(32) NOT NULL,
+    Titulo VARCHAR(40) NOT NULL,
+    Descricao VARCHAR(40),
+    Arte VARCHAR(40) NOT NULL,
     Visibilidade VARCHAR(10) NOT NULL,
     NroRepostagens INTEGER NOT NULL DEFAULT 0,
     NroAlbums INTEGER NOT NULL DEFAULT 0,
@@ -78,7 +78,7 @@ CREATE TABLE Cliente (
 CREATE TABLE Artista (
     NomeUsuario VARCHAR(40),
     Preco NUMERIC(10, 2),
-    ContaBancaria VARCHAR(32),
+    ContaBancaria VARCHAR(40),
     NroAssinantes INTEGER NOT NULL DEFAULT 0,
     NroPosts INTEGER NOT NULL DEFAULT 0,
     NroRequisiçõesFinalizadas INTEGER NOT NULL DEFAULT 0,
@@ -115,7 +115,7 @@ CREATE TABLE Banimento (
     Administrador VARCHAR(40),
     Usuario VARCHAR(40),
     data TIMESTAMP,
-    Motivo VARCHAR(32) NOT NULL,
+    Motivo VARCHAR(40) NOT NULL,
     DataTermino TIMESTAMP,
     CONSTRAINT pk_banimento PRIMARY KEY(Administrador, Usuario, data),
     CONSTRAINT fk_banimento_adm FOREIGN KEY(Administrador) REFERENCES ClassificacaoUsuario(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION,
@@ -123,7 +123,7 @@ CREATE TABLE Banimento (
 );
 
 CREATE TABLE Repostagem (
-    cliente VARCHAR(32),
+    cliente VARCHAR(40),
     post INTEGER,
     dataRepostagem timestamp,
     CONSTRAINT pk_Repostagem PRIMARY KEY(cliente, post, dataRepostagem),
@@ -132,7 +132,7 @@ CREATE TABLE Repostagem (
 );
 
 CREATE TABLE Reacao (
-    cliente VARCHAR(32),
+    cliente VARCHAR(40),
     post INTEGER,
     reacao VARCHAR(7),          --[Like, Dislike, Amei ou Choro]
     CONSTRAINT pk_Reacao PRIMARY KEY(cliente, post, reacao),
@@ -147,9 +147,9 @@ CREATE TABLE Edicao (
     DataCriacaoEdicao TIMESTAMP,
     post SERIAL,
     DataEdicaoAnterior TIMESTAMP,
-    Titulo VARCHAR(32) NOT NULL,
-    Descricao VARCHAR(32) NOT NULL,
-    Arte VARCHAR(32) NOT NULL,              -- ?
+    Titulo VARCHAR(40) NOT NULL,
+    Descricao VARCHAR(40) NOT NULL,
+    Arte VARCHAR(40) NOT NULL,              -- ?
     Visibilidade VARCHAR(10) NOT NULL,      -- [assinante, publico, privado]
 	CONSTRAINT pk_Edicao PRIMARY KEY (id),
     CONSTRAINT sk_Edicao UNIQUE(DataCriacaoEdicao, post),
@@ -157,7 +157,7 @@ CREATE TABLE Edicao (
 );
 
 CREATE TABLE AlbumArtista (
-    Titulo VARCHAR(32),
+    Titulo VARCHAR(40),
     artista VARCHAR(40),
     TipoVisualizacao VARCHAR(15) NOT NULL,
     DataCriacao TIMESTAMP NOT NULL,
@@ -170,8 +170,8 @@ CREATE TABLE AlbumArtista (
 );
  
 CREATE TABLE AlbumCliente (
-    Titulo VARCHAR(32),
-    Cliente VARCHAR(32),
+    Titulo VARCHAR(40),
+    Cliente VARCHAR(40),
     TipoVisualizacao VARCHAR(15) NOT NULL, 
     DataCriacao TIMESTAMP NOT NULL,
     NroReposts INTEGER NOT NULL DEFAULT 0,
@@ -184,12 +184,12 @@ CREATE TABLE AlbumCliente (
 
 CREATE TABLE Requisicao (
     DataCriacao TIMESTAMP,
-    Cliente VARCHAR(32),
-    Titulo VARCHAR(32) NOT NULL,
-    Descricao VARCHAR(32),
+    Cliente VARCHAR(40),
+    Titulo VARCHAR(40) NOT NULL,
+    Descricao VARCHAR(40),
     Minimo INTEGER NOT NULL,
     Maximo INTEGER NOT NULL,
-    Tipo VARCHAR(32) NOT NULL,                  -- ['EXCLUSIVO', 'NORMAL']
+    Tipo VARCHAR(40) NOT NULL,                  -- ['EXCLUSIVO', 'NORMAL']
     Avaliacaoartista NUMERIC(2,1),              -- Nota entre 0.0 até 10.0
     AvaliacaoCliente NUMERIC(2,1),              -- Nota entre 0.0 até 10.0
     -- Status:
@@ -221,8 +221,8 @@ CREATE TABLE Requisicao (
 );
 
 CREATE TABLE Tag (
-    Nome VARCHAR(32) PRIMARY KEY,
-    Tipo VARCHAR(32) NOT NULL,
+    Nome VARCHAR(40) PRIMARY KEY,
+    Tipo VARCHAR(40) NOT NULL,
     NroPostsRestritos INTEGER NOT NULL DEFAULT 0,
     NroPostsPublicos INTEGER NOT NULL DEFAULT 0,
     NroAlbuns INTEGER NOT NULL DEFAULT 0,
@@ -235,7 +235,7 @@ CREATE TABLE Tag (
 
 CREATE TABLE ClassificacaoPost (
     post SERIAL,
-    Tag VARCHAR(32),
+    Tag VARCHAR(40),
     prioridade INTEGER,
 
     CONSTRAINT pk_ClassificacaoPost PRIMARY KEY(post, Tag),
@@ -247,7 +247,7 @@ CREATE TABLE ClassificacaoPost (
 
 CREATE TABLE ClassificacaoEdicao (
     PostEditado SERIAL,
-    Tag VARCHAR(32),
+    Tag VARCHAR(40),
     prioridade INTEGER,
     CONSTRAINT pk_ClassificacaoEdicao PRIMARY KEY(PostEditado, Tag),
     CONSTRAINT fk_ClassificacaoEdicao_post FOREIGN KEY(postEditado) REFERENCES post(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -256,7 +256,7 @@ CREATE TABLE ClassificacaoEdicao (
 );
 
 CREATE TABLE PostsAlbumArtista (
-    Titulo VARCHAR(32),
+    Titulo VARCHAR(40),
     artista VARCHAR(40),
     post SERIAL,
     CONSTRAINT pk_PostsAlbumArtista PRIMARY KEY(titulo, Artista, post),
@@ -265,7 +265,7 @@ CREATE TABLE PostsAlbumArtista (
 );
 
 CREATE TABLE PostsAlbumCliente (
-    titulo VARCHAR(32),
+    titulo VARCHAR(40),
     cliente VARCHAR(40),
     post SERIAL,
     CONSTRAINT pk_PostsAlbumCliente PRIMARY KEY(titulo, cliente, post),
@@ -274,9 +274,9 @@ CREATE TABLE PostsAlbumCliente (
 );
 
 CREATE TABLE TagClassificaAlbumArtista (
-    titulo VARCHAR(32),
+    titulo VARCHAR(40),
     artista VARCHAR(40),
-    tag VARCHAR(32),
+    tag VARCHAR(40),
     prioridade INTEGER,
     CONSTRAINT pk_TagClassificaAlbumArtista PRIMARY KEY(titulo, artista, tag),
     CONSTRAINT fk_TagClassificaAlbumArtista_album FOREIGN KEY(titulo, artista) REFERENCES AlbumArtista(titulo, artista) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -285,9 +285,9 @@ CREATE TABLE TagClassificaAlbumArtista (
 );
 
 CREATE TABLE TagClassificaAlbumCliente (
-    titulo VARCHAR(32),
+    titulo VARCHAR(40),
     cliente VARCHAR(40),
-    tag VARCHAR(32),
+    tag VARCHAR(40),
     Prioridade INTEGER,
     CONSTRAINT pk_TagClassificaAlbumCliente PRIMARY KEY(titulo, cliente, tag),
     CONSTRAINT fk_TagClassificaAlbumCliente_album FOREIGN KEY(titulo, cliente) REFERENCES AlbumCliente(titulo, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -298,7 +298,7 @@ CREATE TABLE TagClassificaAlbumCliente (
 CREATE TABLE ClassificacaoRequisicao (
     dataRequisicao TIMESTAMP,
     cliente VARCHAR(40),
-    Tag VARCHAR(32),
+    Tag VARCHAR(40),
     prioridade INTEGER,
     CONSTRAINT pk_ClassificacaoRequisicao PRIMARY KEY(dataRequisicao, Cliente, Tag),
     CONSTRAINT fk_ClassificacaoRequisicao_requisicao FOREIGN KEY(dataRequisicao, cliente) REFERENCES Requisicao(dataCriacao, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -309,7 +309,7 @@ CREATE TABLE ClassificacaoRequisicao (
 
 CREATE TABLE AssinaturaArtistaCliente (
     artista VARCHAR(40),
-    cliente VARCHAR(32),
+    cliente VARCHAR(40),
     DataAssinatura TIMESTAMP NOT NULL,
     DataLimiteAssinatura TIMESTAMP NOT NULL,
     CONSTRAINT pk_AssinaturaArtistaCliente PRIMARY KEY(artista, cliente),
@@ -321,10 +321,10 @@ CREATE TABLE Aceitacao (
     id SERIAL,
     artista VARCHAR(40) NOT NULL,
     dataRequisicao TIMESTAMP NOT NULL,
-    cliente VARCHAR(32) NOT NULL,
-    tipoDeAceitacao VARCHAR(32), -- ['SOMENTE VALOR', 'SOMENTE ESCOPO', 'VALOR E ESCOPO', 'NAO ACEITO']
-    valor NUMERIC(2, 2) NOT NULL,
-    escopo VARCHAR(32) NOT NULL,
+    cliente VARCHAR(40) NOT NULL,
+    tipoDeAceitacao VARCHAR(40), -- ['SOMENTE VALOR', 'SOMENTE ESCOPO', 'VALOR E ESCOPO', 'NAO ACEITO']
+    valor NUMERIC(2, 2) NOT NULL, --?
+    escopo VARCHAR(40) NOT NULL,
     -- Status:
     -- '1' -> Arquivado
     -- '2' -> Em Aberto
@@ -348,9 +348,9 @@ CREATE TABLE Renegocia (
 	id SERIAL,
     aceitacao SERIAL,
 	renegociacaoPrevia INTEGER,
-    remetente VARCHAR(32) NOT NULL,
-    destinatario VARCHAR(32) NOT NULL,
-    ajusteEscopo VARCHAR(32),
+    remetente VARCHAR(40) NOT NULL,
+    destinatario VARCHAR(40) NOT NULL,
+    ajusteEscopo VARCHAR(40),
     ajusteValor INTEGER,
 	CONSTRAINT pk_Renegocia PRIMARY KEY (id, aceitacao),
     CONSTRAINT fk_Renegocia_aceitacao FOREIGN KEY(aceitacao) REFERENCES Aceitacao(id) ON UPDATE CASCADE ON DELETE CASCADE,
@@ -360,10 +360,10 @@ CREATE TABLE Renegocia (
 CREATE TABLE Mensagens ( 
     aceitacao SERIAL,
     dataEnvio TIMESTAMP,
-    remetente VARCHAR(32),
-    Destinatario VARCHAR(32) NOT NULL,
-    conteudo VARCHAR(32),
-    anexo VARCHAR(32),           -- ?
+    remetente VARCHAR(40),
+    Destinatario VARCHAR(40) NOT NULL,
+    conteudo VARCHAR(40),
+    anexo VARCHAR(40),           -- ?
     CONSTRAINT pk_mensagens PRIMARY KEY (aceitacao, dataEnvio, remetente),
 	CONSTRAINT sk_mensagens UNIQUE(aceitacao, dataEnvio, remetente),
     CONSTRAINT fk_Mensagens_aceitacao FOREIGN KEY(aceitacao) REFERENCES aceitacao(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -372,10 +372,10 @@ CREATE TABLE Mensagens (
 CREATE TABLE Responde (
     aceitacaoMsgResponde INTEGER,
 	dataEnvioResponde TIMESTAMP,
-	remetenteResponde VARCHAR(32),
+	remetenteResponde VARCHAR(40),
 	aceitacaoMsgRespondida INTEGER NOT NULL,
 	dataEnvioRespondida TIMESTAMP NOT NULL,
-	remetenteRespondida VARCHAR(32) NOT NULL,
+	remetenteRespondida VARCHAR(40) NOT NULL,
 	CONSTRAINT pk_Responde PRIMARY KEY (aceitacaoMsgResponde, dataEnvioResponde, remetenteResponde),
 	CONSTRAINT fk_Responde_Aceitacao FOREIGN KEY (aceitacaoMsgResponde, dataEnvioResponde, remetenteResponde) REFERENCES Mensagens(aceitacao, dataEnvio, remetente) ON UPDATE CASCADE ON DELETE CASCADE, 
     CONSTRAINT fk_Respondida_Aceitacao FOREIGN KEY (aceitacaoMsgRespondida, dataEnvioRespondida, remetenteRespondida) REFERENCES Mensagens(aceitacao, dataEnvio, remetente) ON UPDATE CASCADE ON DELETE NO ACTION, 
