@@ -52,6 +52,7 @@ def index():
             db.create_schema()
         if('add-db' in request.form):
             db.add_dados()
+
     return render_template("index.html")
 
 @app_flask.route('/register', methods=['GET', 'POST'])
@@ -60,9 +61,7 @@ def register():
     form = RegisterForm(request.form)
     if request.method == 'POST':
         db.insert_user(form.data)
-
-
-        #return url_for('index')
+        return render_template("index.html", form = form)
 
     return render_template("register.html", form = form)
 
