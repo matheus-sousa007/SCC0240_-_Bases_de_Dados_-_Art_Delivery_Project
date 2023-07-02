@@ -116,7 +116,7 @@ class database():
     def get_followers_of_user(self, user):
         try:
             self.connection()
-            self.cursor.execute(f"SELECT usuariosegue FROM segue AS S WHERE(S.usuariosegue='{user}')")
+            self.cursor.execute(f"SELECT usuarioseguido FROM segue AS S WHERE(S.usuariosegue='{user}')")
             followers = self.cursor.fetchall()
             self.close_connection()
             return followers
@@ -143,7 +143,7 @@ class database():
        
     def artist_by_min_follower(self, min_follower):
         query = f"""SELECT nomeusuario FROM classificacaoComum AS C 
-                    WHERE (C.numsegidores > {min_follower} 
+                    WHERE (C.numseguidores > {min_follower} 
                     and UPPER(C.tipocomum) = 'ARTISTA')"""
         try:
             self.connection()   
@@ -163,6 +163,7 @@ class database():
         for tag in tags:
             query_tags += f"nome='{tag}' OR "
         query_tags = query_tags[:len(query_tags)-3]      # removendo ultimo OR
+
 
         query = f"""
         SELECT P.id as post
