@@ -2,7 +2,11 @@ import psycopg2 as psy
 from datetime import datetime
 from flask import Flask
 
+# Todo tratamento com o postgresSQL eh feito nesta classe,
+# afim de ficar mais modularizado
+
 class database():
+    # Variaveis de ambiente
     def __init__(self):
         self.DB_NAME = 'art-delivery'
         self.DB_USER = 'postgres'
@@ -10,6 +14,7 @@ class database():
         self.DB_HOST = 'localhost'
         self.DB_PORT = 5432
 
+    
     def connection(self):
         self.conn = psy.connect(dbname=self.DB_NAME, user=self.DB_USER, password=self.DB_PASS, host=self.DB_HOST, port=self.DB_PORT)
         self.cursor = self.conn.cursor()
@@ -18,6 +23,8 @@ class database():
         self.conn.commit()
         self.conn.close()
 
+    # reset Banco de dados, removendo todos dados e
+    # executando os esquemas novamente
     def create_schema(self):
         file_drop = open("bd/drops.sql", "r").read()
         schema_file = open("bd/esquemas.sql", "r").read()
@@ -31,8 +38,7 @@ class database():
         except psy.OperationalError as err:
             print(err)
 
-
-
+    # Registro de um usuario ao banco
     def insert_user(self, user_data):
         query1 = f"""
             INSERT INTO ClassificacaoUsuario VALUES(
@@ -67,6 +73,7 @@ class database():
             return None
 
 
+    # Adiciona dados atraves do arquivo DADOS
 
     def add_dados(self):
         try:
@@ -77,6 +84,7 @@ class database():
         except psy.OperationalError as err:
             print(err)
 
+    # Retorna post com mais reacoes do tipo {react}
     def more_reaction_album(self, react):
 
         query = f"""SELECT post, artista
@@ -95,9 +103,10 @@ class database():
             return None, None
 
         return post_id, post_artist
-
+    
+    # Funcao de consulta para buscar usuarios comuns ou administradores
+    # Que estao cadastrados no banco
     def get_users(self, ehAdmin=False):
-
         try:
             self.connection()
             if(ehAdmin):
@@ -113,9 +122,8 @@ class database():
         except psy.OperationalError as err:
             print(err)
             return None
-    
-
-
+        
+    # Dado um usuario, retorna seus seguidores
     def get_followers_of_user(self, user):
         try:
             self.connection()
@@ -129,7 +137,7 @@ class database():
             return None
 
         
-    
+    # retorna tags cadastradas no banco
     def get_tags(self):
         self.connection()
         try:
@@ -143,7 +151,8 @@ class database():
         except psy.OperationalError as err:
             print(err)
             return None
-       
+        
+    # Dado um administrador, retona os usuarios no qual ele baniu
     def usuarios_banidos(self, adm):
 
         self.connection()
@@ -158,6 +167,7 @@ class database():
             print(err)
             return None
        
+    # Retorna todos artistas que possuem mais seguidores que {min_follower}
     def artist_by_min_follower(self, min_follower):
 
         query = f"""SELECT nomeusuario FROM classificacaoComum AS C 
@@ -176,6 +186,7 @@ class database():
             print(err)
             return None
 
+    # Retorna todos posts que sao classificados com as tags {tags}
     def get_post_by_tag(self, tags):
         query_tags = ''
         for tag in tags:

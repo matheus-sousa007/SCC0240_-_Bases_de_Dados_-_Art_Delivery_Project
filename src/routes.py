@@ -1,6 +1,6 @@
 from app import app_flask
 from app import database
-from flask import render_template, request, flash, redirect, url_for
+from flask import render_template, request, redirect, url_for
 
 from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, EmailField, IntegerField, DateField, RadioField, SelectMultipleField, SelectField
@@ -8,6 +8,8 @@ from wtforms.validators import DataRequired
 import psycopg2 as psy 
 
 db = database()
+
+# Classes usando FlaskForm para utilizar formulario em diferentes paginas html
 
 class RegisterForm(FlaskForm):
     nomeUsuario = StringField("Nome de Usuario", validators=[DataRequired()])
@@ -44,7 +46,10 @@ class minFollower(FlaskForm):
     minFollower = IntegerField("Minimo de Seguidores")
     submit = SubmitField("Selecionar")
 
-    
+
+# Pagina inicial da interface, possibilitando redirecionar para outras funcionalidades
+# O reset banco de dados e adicionar dados sao tratados na propria pagina.
+
 @app_flask.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -55,20 +60,23 @@ def index():
 
     return render_template("index.html")
 
+
+# Criacao de conta
 @app_flask.route('/register', methods=['GET', 'POST'])
 def register():
 
     form = RegisterForm(request.form)
+    # Quando tem um request como post, significa que estamos recendo do usuario
+    # podendo ser usado para inserir ou fazer consulta
+
     if request.method == 'POST':
         db.insert_user(form.data)
         return render_template("index.html", form = form)
 
     return render_template("register.html", form = form)
 
-@app_flask.route('/artista')
-def artista():
-    return "artista"
 
+# Procura de posts atraves da tag
 @app_flask.route('/post_tag', methods=['GET', 'POST'])
 def post_tag():
     db = database()
@@ -86,6 +94,7 @@ def post_tag():
     
     return render_template("post_tag.html", form=form)
 
+# Procurar seguidores de um usuário 
 @app_flask.route('/followers_by', methods=['GET', 'POST'])
 def followers_by():
     db = database()
@@ -95,7 +104,6 @@ def followers_by():
 
     if request.method == 'POST':
         try:
-            
             users = db.get_followers_of_user(form.data['users'])
             return render_template("followers_by.html", form=form, users=users, user_follow=form.data['users'])
 
@@ -103,6 +111,7 @@ def followers_by():
             print(err)
     return render_template("followers_by.html", form=form)
 
+# Post com mais reacoes de um tipo
 @app_flask.route('/more_reaction', methods=['GET', 'POST'])
 def more_reaction():
     form = moreReacts()
@@ -118,6 +127,7 @@ def more_reaction():
 
     return render_template("more_react.html", form=form)
 
+# Procurar artistas contendo um N mínimo de seguidores
 @app_flask.route('/artist_by_min_follower', methods=['GET', 'POST'])
 def artist_by_min_follower():
     form = minFollower()
@@ -133,6 +143,7 @@ def artist_by_min_follower():
 
     return render_template("artist_by_min_follower.html", form=form)
 
+# Verificar usuários banidos
 @app_flask.route('/usuarios_banidos', methods=['GET', 'POST'])
 def usuarios_banidos():
     
@@ -144,7 +155,6 @@ def usuarios_banidos():
     if request.method == 'POST':
         try:
             users = db.usuarios_banidos(form.data['users'])
-            #banidos = db.artist_by_min_follower(form.data['minFollower'])
             return render_template("usuarios_banidos.html", form=form, users=users)
 
         except psy.Error as err:
