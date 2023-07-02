@@ -19,10 +19,10 @@ CREATE TABLE ClassificacaoComum (
     NomeUsuario VARCHAR(40) PRIMARY KEY,
     TipoComum VARCHAR(7) NOT NULL,      -- [CLIENTE, ARTISTA]
     NumSeguindo INTEGER NOT NULL DEFAULT 0,
-    NumSegidores INTEGER NOT NULL DEFAULT 0,
+    NumSeguidores INTEGER NOT NULL DEFAULT 0,
     NroAlbums INTEGER NOT NULL DEFAULT 0,
     CONSTRAINT fk_ClassificacaoComum FOREIGN KEY(NomeUsuario) REFERENCES ClassificacaoUsuario(NomeUsuario) ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT ck_ClassificacaoComum_Positive CHECK((NumSeguindo >= 0) AND (NumSegidores >= 0) AND (NroAlbums >= 0)),
+    CONSTRAINT ck_ClassificacaoComum_Positive CHECK((NumSeguindo >= 0) AND (NumSeguidores >= 0) AND (NroAlbums >= 0)),
     CONSTRAINT ck_ClassificacaoComum_TipoComum CHECK(UPPER(TipoComum) in ('CLIENTE', 'ARTISTA'))
 );
 CREATE TABLE Administrador (
@@ -114,11 +114,11 @@ CREATE TABLE Segue (
 CREATE TABLE Banimento (
     Administrador VARCHAR(40),
     Usuario VARCHAR(40),
-    data VARCHAR(32),
+    data TIMESTAMP,
     Motivo VARCHAR(32) NOT NULL,
     DataTermino TIMESTAMP,
     CONSTRAINT pk_banimento PRIMARY KEY(Administrador, Usuario, data),
-    CONSTRAINT fk_banimento_adm FOREIGN KEY(Administrador) REFERENCES ClassificacaoUsuario(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION
+    CONSTRAINT fk_banimento_adm FOREIGN KEY(Administrador) REFERENCES ClassificacaoUsuario(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION,
     CONSTRAINT fk_banimento_comum FOREIGN KEY(Usuario) REFERENCES ClassificacaoComum(NomeUsuario) ON UPDATE CASCADE ON DELETE NO ACTION
 );
 
@@ -145,7 +145,7 @@ CREATE TABLE Reacao (
 CREATE TABLE Edicao (
     id SERIAL,
     DataCriacaoEdicao TIMESTAMP,
-    post INTEGER,
+    post SERIAL,
     DataEdicaoAnterior TIMESTAMP,
     Titulo VARCHAR(32) NOT NULL,
     Descricao VARCHAR(32) NOT NULL,
@@ -234,20 +234,19 @@ CREATE TABLE Tag (
 );
 
 CREATE TABLE ClassificacaoPost (
-    post INTEGER,
+    post SERIAL,
     Tag VARCHAR(32),
     prioridade INTEGER,
 
     CONSTRAINT pk_ClassificacaoPost PRIMARY KEY(post, Tag),
     CONSTRAINT fk_ClassificacaoPost_post FOREIGN KEY(post) REFERENCES post(id) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_ClassificacaoPost_tag FOREIGN KEY(Tag) REFERENCES tag(nome) ON UPDATE CASCADE ON DELETE CASCADE,
-    
     CONSTRAINT ck_ClassificacaoPost_positive CHECK(prioridade >= 0)
 
 );
 
 CREATE TABLE ClassificacaoEdicao (
-    PostEditado INTEGER,
+    PostEditado SERIAL,
     Tag VARCHAR(32),
     prioridade INTEGER,
     CONSTRAINT pk_ClassificacaoEdicao PRIMARY KEY(PostEditado, Tag),
@@ -259,7 +258,7 @@ CREATE TABLE ClassificacaoEdicao (
 CREATE TABLE PostsAlbumArtista (
     Titulo VARCHAR(32),
     artista VARCHAR(40),
-    post INTEGER,
+    post SERIAL,
     CONSTRAINT pk_PostsAlbumArtista PRIMARY KEY(titulo, Artista, post),
     CONSTRAINT fk_PostsAlbumArtista_album FOREIGN KEY(titulo, artista) REFERENCES AlbumArtista(titulo, artista) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_PostsAlbumArtista_post FOREIGN KEY(post) REFERENCES Post(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -268,7 +267,7 @@ CREATE TABLE PostsAlbumArtista (
 CREATE TABLE PostsAlbumCliente (
     titulo VARCHAR(32),
     cliente VARCHAR(40),
-    post INTEGER,
+    post SERIAL,
     CONSTRAINT pk_PostsAlbumCliente PRIMARY KEY(titulo, cliente, post),
     CONSTRAINT fk_PostsAlbumCliente_album FOREIGN KEY(titulo, cliente) REFERENCES AlbumCliente(titulo, cliente) ON UPDATE CASCADE ON DELETE CASCADE,
     CONSTRAINT fk_PostsAlbumCliente_post FOREIGN KEY(post) REFERENCES Post(id) ON UPDATE CASCADE ON DELETE CASCADE
@@ -347,7 +346,7 @@ CREATE TABLE Aceitacao (
 
 CREATE TABLE Renegocia (
 	id SERIAL,
-    aceitacao INTEGER,
+    aceitacao SERIAL,
 	renegociacaoPrevia INTEGER,
     remetente VARCHAR(32) NOT NULL,
     destinatario VARCHAR(32) NOT NULL,
@@ -359,7 +358,7 @@ CREATE TABLE Renegocia (
 );
 
 CREATE TABLE Mensagens ( 
-    aceitacao INTEGER,
+    aceitacao SERIAL,
     dataEnvio TIMESTAMP,
     remetente VARCHAR(32),
     Destinatario VARCHAR(32) NOT NULL,
