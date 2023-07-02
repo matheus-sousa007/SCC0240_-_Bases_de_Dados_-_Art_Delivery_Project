@@ -4,16 +4,19 @@
 
     <form method="POST" style="margin: 5% 20%">
         <br>
-        <a href="{{ url_for('post_tag') }} " class="btn btn-primary">Procurar posts por tag</a>
+        <a href="{{ url_for('post_tag') }} " class="btn btn-primary">Procurar posts através de tag</a>
         <br>
         <br>
         <a href="{{ url_for('followers_by') }}" class="btn btn-primary">Procurar seguidores de um usuario</a>
         <br>
         <br>
-        <a href="{{ url_for('artist_by_min_follower') }}" class="btn btn-primary">Procurar artista com um minimo de seguidores</a>
+        <a href="{{ url_for('artist_by_min_follower') }}" class="btn btn-primary">Procurar artistas contendo um N minimo de seguidores</a>
         <br>
         <br>
         <a href="{{ url_for('more_reaction') }}" class="btn btn-primary">Post com mais reações de um tipo</a>
+        <br>
+        <br>
+        <a href="{{ url_for('usuarios_banidos') }}" class="btn btn-primary">Verificar usuarios banidos</a>
         <br>
         <br>
         <a href="{{ url_for('register') }}" class="btn btn-primary">Criar conta</a>
@@ -23,7 +26,7 @@
             Resetar banco de dados
         </button>
         <button class="btn btn-danger" name="add-db">
-            Add banco de dados
+            Adicionar dados ao banco
         </button>
             </form>
     

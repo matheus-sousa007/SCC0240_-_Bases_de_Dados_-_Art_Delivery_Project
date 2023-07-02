@@ -1,0 +1,25 @@
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+
+<div class="index" style="margin: 5% 20%; align-content: center;">
+
+    <form method="POST" style="margin: 5% 20%">
+        <br>
+
+        Nome do administrador
+        {{form.users(class="form-control")}}
+        {{form.submit(class="btn btn-primary")}}
+        <br>
+        <br>
+        {% for user in users %}
+        Usuarios banidos por {{form.data['users']}}   
+        <div style="padding: 10px; margin: 20px">
+            <p style="font-size: 24px">{{ user }}</p>
+        </div>
+        {% endfor %}
+    </form>
+    
+    
+    <br><br>
+    <br><br>
+    <a href="{{ url_for('index') }}" class="btn btn-danger">VOLTAR</a>
+</div>

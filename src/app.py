@@ -96,11 +96,14 @@ class database():
 
         return post_id, post_artist
 
-    def get_users(self):
+    def get_users(self, ehAdmin=False):
 
         try:
             self.connection()
-            self.cursor.execute("SELECT nomeUsuario FROM classificacaoUsuario")
+            if(ehAdmin):
+                self.cursor.execute("SELECT administrador FROM banimento")
+            else:
+                self.cursor.execute("SELECT nomeUsuario FROM classificacaoUsuario")
             users = self.cursor.fetchall()
             list_users = []
             for user in users:
@@ -141,7 +144,22 @@ class database():
             print(err)
             return None
        
+    def usuarios_banidos(self, adm):
+
+        self.connection()
+        try:
+            self.cursor.execute(f"SELECT * FROM banimento WHERE (Administrador='{adm}')")
+            banidos = self.cursor.fetchall()
+            self.close_connection()
+
+            return banidos
+        
+        except psy.OperationalError as err:
+            print(err)
+            return None
+       
     def artist_by_min_follower(self, min_follower):
+
         query = f"""SELECT nomeusuario FROM classificacaoComum AS C 
                     WHERE (C.numseguidores > {min_follower} 
                     and UPPER(C.tipocomum) = 'ARTISTA')"""

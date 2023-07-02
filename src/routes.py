@@ -37,7 +37,7 @@ class usersForm(FlaskForm):
     submit = SubmitField("Selecionar")
 
 class moreReacts(FlaskForm):
-    reaction = RadioField("Tipo de usuario", choices=[('Like'),('Dislike'), ('Choro'), ('Amei')])
+    reaction = RadioField("Tipo de reação", choices=[('Like'),('Dislike'), ('Choro'), ('Amei')])
     submit = SubmitField("Selecionar")
     
 class minFollower(FlaskForm):
@@ -48,7 +48,6 @@ class minFollower(FlaskForm):
 @app_flask.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        #print(request.form)
         if('reset-db' in request.form):
             db.create_schema()
         if('add-db' in request.form):
@@ -60,18 +59,10 @@ def register():
 
     form = RegisterForm(request.form)
     if request.method == 'POST':
-        print('POST')
-        insert_user = f"""
-                INSERT INTO ClassificacaoComum(NomeUsuario, TipoComum) 
-                    VALUES({form.nomeUsuario.data}, 'cliente')
-                """
-        try:
-            db.insert_user(form.data)
-        except psy.Error as err:
-            print(err)
+        db.insert_user(form.data)
 
 
-        return url_for('index')
+        #return url_for('index')
 
     return render_template("register.html", form = form)
 
@@ -87,7 +78,6 @@ def post_tag():
     form.tags.choices = db.get_tags()
 
     if request.method == 'POST' and form:
-        print(form)
         try:
             posts = db.get_post_by_tag(tuple(form.data['tags']))
             return render_template("post_tag.html", form=form, posts=posts)
@@ -95,7 +85,6 @@ def post_tag():
         except psy.Error as err:
             print(err)
     
-    print('form')
     return render_template("post_tag.html", form=form)
 
 @app_flask.route('/followers_by', methods=['GET', 'POST'])
@@ -109,9 +98,6 @@ def followers_by():
         try:
             
             users = db.get_followers_of_user(form.data['users'])
-            print('seguidores de ')
-            print(list(users))
-            
             return render_template("followers_by.html", form=form, users=users, user_follow=form.data['users'])
 
         except psy.Error as err:
@@ -140,7 +126,6 @@ def artist_by_min_follower():
     if request.method == 'POST':
         try:
             db = database()
-            print(form.data['minFollower'])
             artists = db.artist_by_min_follower(form.data['minFollower'])
             return render_template("artist_by_min_follower.html", form=form, artists=artists)
 
@@ -151,5 +136,18 @@ def artist_by_min_follower():
 
 @app_flask.route('/usuarios_banidos', methods=['GET', 'POST'])
 def usuarios_banidos():
+    
+    db = database()
 
-    return render_template("artist_by_min_follower.html", form=form)
+    form = usersForm(request.form)
+    form.users.choices = db.get_users(ehAdmin=True)
+
+    if request.method == 'POST':
+        try:
+            users = db.usuarios_banidos(form.data['users'])
+            #banidos = db.artist_by_min_follower(form.data['minFollower'])
+            return render_template("usuarios_banidos.html", form=form, users=users)
+
+        except psy.Error as err:
+            print(err)
+    return render_template("usuarios_banidos.html", form=form)
